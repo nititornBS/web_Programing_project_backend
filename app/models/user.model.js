@@ -45,36 +45,51 @@ User.create = (newUser, result) => {
     });
   });
 };
-
 User.loginModel = (account, result) => {
   sql.query(
-    "SELECT * FROM users WHERE  username=?",
+    "SELECT * FROM users WHERE username=?",
     [account.username],
-    (err, res) => {
+    async (err, res) => {
       if (err) {
-        console.log("err :" + err);
+        console.log("err: " + err);
         return;
       }
       if (res.length) {
+        console.log("Input Password: " + account.password);
+        console.log("Stored Password: " + res[0].Password);
+
+        // const inputPassword = account.password;
+        // const storedPassword = res[0].password;
+
+        // if (!inputPassword || !storedPassword) {
+        //   console.log("Input or stored password is undefined.");
+        //   result({ kind: "invalid_pass" }, null);
+        //   return;
+        // }
+
         const validPassword = bcrypt.compare(account.password, res[0].password);
+
         if (validPassword) {
           const token = jwt.sign({ id: res.insertId }, scKey.secret, {
             expiresIn: expireTime,
           });
-          console.log("Login success. Token was generate Token: " + token);
+          console.log("Login success. Token was generated: " + token);
           res[0].accessToken = token;
           result(null, res[0]);
-          return;
+           return;
         } else {
-          console.log("Password not match");
+          console.log("Password does not match");
           result({ kind: "invalid_pass" }, null);
-          return;
+           return;
         }
+      } else {
+        console.log("User not found");
+        result({ kind: "not_found" }, null);
       }
-      result({ kind: "not_found" }, null);
     }
   );
 };
+
 
 
 
