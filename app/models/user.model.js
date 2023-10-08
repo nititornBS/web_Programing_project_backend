@@ -45,9 +45,10 @@ User.create = (newUser, result) => {
     });
   });
 };
+
 User.loginModel = (account, result) => {
   sql.query(
-    "SELECT * FROM users WHERE username=?",
+    "SELECT * FROM users WHERE Username=?",
     [account.username],
     async (err, res) => {
       if (err) {
@@ -58,29 +59,38 @@ User.loginModel = (account, result) => {
         console.log("Input Password: " + account.password);
         console.log("Stored Password: " + res[0].Password);
 
-        // const inputPassword = account.password;
-        // const storedPassword = res[0].password;
+        const inputPassword = account.password;
+        const storedPassword = res[0].Password;
 
-        // if (!inputPassword || !storedPassword) {
-        //   console.log("Input or stored password is undefined.");
-        //   result({ kind: "invalid_pass" }, null);
-        //   return;
-        // }
-
-        const validPassword = bcrypt.compare(account.password, res[0].password);
-
-        if (validPassword) {
-          const token = jwt.sign({ id: res.insertId }, scKey.secret, {
-            expiresIn: expireTime,
-          });
-          console.log("Login success. Token was generated: " + token);
-          res[0].accessToken = token;
-          result(null, res[0]);
-           return;
-        } else {
-          console.log("Password does not match");
+        if (!inputPassword || !storedPassword) {
+          console.log("Input or stored password is undefined.");
           result({ kind: "invalid_pass" }, null);
-           return;
+          return;
+        }
+
+        try {
+          const validPassword = await bcrypt.compare(
+            inputPassword,
+            storedPassword
+          );
+
+          if (validPassword) {
+            const token = jwt.sign({ id: res.insertId }, scKey.secret, {
+              expiresIn: expireTime,
+            });
+            console.log("Login success. Token was generated: " + token);
+            res[0].accessToken = token;
+            result(null, res[0]);
+            return;
+          } else {
+            console.log("Password does not match");
+            result({ kind: "invalid_pass" }, null);
+            return;
+          }
+        } catch (error) {
+          console.log("Error comparing passwords: " + error);
+          result({ kind: "compare_error" }, null);
+          return;
         }
       } else {
         console.log("User not found");
@@ -89,6 +99,7 @@ User.loginModel = (account, result) => {
     }
   );
 };
+
 
 
 
