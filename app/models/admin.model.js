@@ -127,7 +127,7 @@ Admin.updateAdmin = (id, data, result) => {
 
 Admin.updateuser = (id, data, result) => {
   sql.query(
-    "UPDATE user SET name=?,username = ? ,password = ?, WHERE AdminID=?",
+    "UPDATE users SET name=?,username = ? ,password = ?, WHERE UserpasswordID=?",
     [data.name, data.username, data.password, id],
     (err, res) => {
       if (err) {
@@ -146,15 +146,10 @@ Admin.updateuser = (id, data, result) => {
   );
 };
 
-Admin.updateroom = ( dataRoom, result) => {
+Admin.updateroom = (id,dataRoom, result) => {
   sql.query(
-    "UPDATE Room SET RoomNumber=?,SizeID = ? ,CurrentStatus = ?, WHERE RoomNumber=?",
-    [
-      dataRoom.roomnumber,
-      dataRoom.sizeid,
-      dataRoom.CurrentStatus,
-      dataRoom.roomnumber,
-    ],
+    "UPDATE room SET RoomNumber=?, SizeID=?, CurrentStatus=? WHERE RoomID=?",
+    [dataRoom.roomnumber, dataRoom.sizeid, dataRoom.CurrentStatus, id],
     (err, res) => {
       if (err) {
         console.log("Error: " + err);
@@ -162,11 +157,12 @@ Admin.updateroom = ( dataRoom, result) => {
         return;
       }
       if (res.affectedRows == 0) {
-        result({ kind: "not_found" }, nall);
+        result({ kind: "not_found" }, null);
         return;
       }
-      console.log("Update room: " + {  ...dataRoom });
-      result(null, {  ...dataRoom });
+      console.log("Update room: " + { ...dataRoom });
+      result(null, { "message": "success","room":dataRoom
+} );
       return;
     }
   );
@@ -194,8 +190,6 @@ Admin.updatesizeroom = (id, dataSizeRoom, result) => {
 };
 
 
-
-
 Admin.removeAdmin = (id, result) => {
  
   sql.query("DELETE FROM admins WHERE  AdminID = ?", [id], (err, res) => {
@@ -212,6 +206,7 @@ Admin.removeAdmin = (id, result) => {
     result(null, { id: id });
   });
 };
+
 Admin.removeUser = (id, result) => {
  
   sql.query("DELETE FROM users WHERE  UserID = ?", [id], (err, res) => {
@@ -246,6 +241,18 @@ Admin.removeRoom = (roomNumber, result) => {
   });
 };
 
+
+Admin.getAllRecordsroom = (result) => {
+  console.log("you are in the adminmodel");
+  sql.query("SELECT * FROM `room`", (err, res) => {
+    if (err) {
+      console.log("Query err: " + err);
+      result(err, null);
+      return;
+    }
+    result(null, res);
+  });
+};
 Admin.getAllRecords = (result) => {
   sql.query("SELECT * FROM admins", (err, res) => {
     if (err) {
@@ -256,4 +263,18 @@ Admin.getAllRecords = (result) => {
     result(null, res);
   });
 };
+
+
+Admin.createRoom = (newRoom, result) => {
+  sql.query("INSERT INTO room SET ?", newRoom, (err, res) => {
+    if (err) {
+      console.log("Error inserting room: " + err);
+      result(err, null);
+      return;
+    }
+    console.log("Created room: ", { id: res.insertId, ...newRoom });
+    result(null, { id: res.insertId, ...newRoom });
+  });
+};
+
 module.exports = Admin;

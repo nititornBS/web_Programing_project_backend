@@ -72,8 +72,9 @@ const updateUserCtrl = (req, res) => {
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty." });
   }
+  const salt = bcrypt.genSaltSync(10);
   const data = {
-    name: req.body.fullname,
+    name: req.body.name,
     username: req.body.username,
     password: bcrypt.hashSync(req.body.password, salt),
   };
