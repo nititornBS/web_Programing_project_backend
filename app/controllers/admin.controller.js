@@ -65,7 +65,7 @@ const updateadminCtrl = (req, res) => {
   });
 };
 const deletedUser = (req, res) => {
-  Admin.removeUser(req.params.id, (err, result) => {
+  Admin.removeAdmin(req.params.id, (err, result) => {
     if (err) {
       if (err.kind == "not_found") {
         res.status(401).send({ message: "Not found user: " + req.params.id });

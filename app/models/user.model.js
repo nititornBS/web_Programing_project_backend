@@ -100,13 +100,9 @@ User.loginModel = (account, result) => {
   );
 };
 
-
-
-
-
 User.updateUser = (id, data, result) => {
   sql.query(
-    "UPDATE users SET name=?,username = ? ,password = ?, WHERE id=?",
+    "UPDATE users SET name=?,username = ? ,password = ?, WHERE UserID=?",
     [data.name, data.username, data.password, id],
     (err, res) => {
       if (err) {
@@ -126,7 +122,7 @@ User.updateUser = (id, data, result) => {
 };
 User.removeUser = (id, result) => {
   removeOldImage(id);
-  sql.query("DELETE FROM users WHERE  ID = ?", [id], (err, res) => {
+  sql.query("DELETE FROM users WHERE  UserID = ?", [id], (err, res) => {
     if (err) {
       console.log("Query : " + err);
       result(err, null);

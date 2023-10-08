@@ -104,7 +104,7 @@ Admin.loginModel = (account, result) => {
 
 Admin.updateAdmin = (id, data, result) => {
   sql.query(
-    "UPDATE admins SET name=?,username = ? ,password = ?, WHERE id=?",
+    "UPDATE admins SET name=?,username = ? ,password = ?, WHERE AdminID=?",
     [data.name, data.username, data.password, id],
     (err, res) => {
       if (err) {
@@ -127,7 +127,7 @@ Admin.updateAdmin = (id, data, result) => {
 
 Admin.updateuser = (id, data, result) => {
   sql.query(
-    "UPDATE user SET name=?,username = ? ,password = ?, WHERE id=?",
+    "UPDATE user SET name=?,username = ? ,password = ?, WHERE AdminID=?",
     [data.name, data.username, data.password, id],
     (err, res) => {
       if (err) {
@@ -146,10 +146,36 @@ Admin.updateuser = (id, data, result) => {
   );
 };
 
-Admin.updatesizeroom = (id, dataSizwRoom, result) => {
+Admin.updateroom = ( dataRoom, result) => {
+  sql.query(
+    "UPDATE Room SET RoomNumber=?,SizeID = ? ,CurrentStatus = ?, WHERE RoomNumber=?",
+    [
+      dataRoom.roomnumber,
+      dataRoom.sizeid,
+      dataRoom.CurrentStatus,
+      dataRoom.roomnumber,
+    ],
+    (err, res) => {
+      if (err) {
+        console.log("Error: " + err);
+        result(err, null);
+        return;
+      }
+      if (res.affectedRows == 0) {
+        result({ kind: "not_found" }, nall);
+        return;
+      }
+      console.log("Update room: " + {  ...dataRoom });
+      result(null, {  ...dataRoom });
+      return;
+    }
+  );
+};
+
+Admin.updatesizeroom = (id, dataSizeRoom, result) => {
   sql.query(
     "UPDATE sizedetail SET SizeName=?,MaxCapacity = ? ,CurrentPricePerHour = ?, WHERE SizeID =?",
-    [dataSizwRoom.sizename, dataSizwRoom.maxcapacity, dataSizwRoom.price, id],
+    [dataSizeRoom.sizename, dataSizeRoom.maxcapacity, dataSizeRoom.price, id],
     (err, res) => {
       if (err) {
         console.log("Error: " + err);
@@ -160,38 +186,35 @@ Admin.updatesizeroom = (id, dataSizwRoom, result) => {
         result({ kind: "not_found" }, nall);
         return;
       }
-      console.log("Update user: " + { id: id, ...dataSizwRoom });
-      result(null, { id: id, ...dataSizwRoom });
-      return;
-    }
-  );
-};
-
-Admin.updateroom = (id, dataRoom, result) => {
-  sql.query(
-    "UPDATE Room SET RoomNumber=?,SizeID = ? ,CurrentStatus = ?, WHERE id=?",
-    [dataRoom.roomnumber, dataRoom.sizeid, dataRoom.CurrentStatus, id],
-    (err, res) => {
-      if (err) {
-        console.log("Error: " + err);
-        result(err, null);
-        return;
-      }
-      if (res.affectedRows == 0) {
-        result({ kind: "not_found" }, nall);
-        return;
-      }
-      console.log("Update user: " + { id: id, ...dataRoom });
-      result(null, { id: id, ...dataRoom });
+      console.log("Update user: " + { id: id, ...dataSizeRoom });
+      result(null, { id: id, ...dataSizeRoom });
       return;
     }
   );
 };
 
 
+
+
+Admin.removeAdmin = (id, result) => {
+ 
+  sql.query("DELETE FROM admins WHERE  AdminID = ?", [id], (err, res) => {
+    if (err) {
+      console.log("Query : " + err);
+      result(err, null);
+      return;
+    }
+    if (res.affectedRows == 0) {
+      result({ kind: "not_found" });
+      return;
+    }
+    console.log("Deleted admin id : " + id);
+    result(null, { id: id });
+  });
+};
 Admin.removeUser = (id, result) => {
-  removeOldImage(id);
-  sql.query("DELETE FROM admins WHERE  ID = ?", [id], (err, res) => {
+ 
+  sql.query("DELETE FROM users WHERE  UserID = ?", [id], (err, res) => {
     if (err) {
       console.log("Query : " + err);
       result(err, null);
@@ -203,6 +226,23 @@ Admin.removeUser = (id, result) => {
     }
     console.log("Deleted user id : " + id);
     result(null, { id: id });
+  });
+};
+
+Admin.removeRoom = (roomNumber, result) => {
+  
+  sql.query("DELETE FROM Room WHERE  RoomNumber  = ?", [roomNumber], (err, res) => {
+    if (err) {
+      console.log("Query : " + err);
+      result(err, null);
+      return;
+    }
+    if (res.affectedRows == 0) {
+      result({ kind: "not_found" });
+      return;
+    }
+    console.log("Deleted roomNumber : " + roomNumber);
+    result(null, { roomNumber: roomNumber });
   });
 };
 
