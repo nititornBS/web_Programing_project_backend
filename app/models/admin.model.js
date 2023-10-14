@@ -10,6 +10,7 @@ const Admin = function (admin) {
   this.username = admin.username;
   this.password = admin.password;
 };
+
 Admin.checkUsername = (username, result) => {
   sql.query(
     "SELECT * FROM `admins` WHERE username = '" + username + "'",
@@ -46,7 +47,6 @@ Admin.create = (newUser, result) => {
     });
   });
 };
-
 
 Admin.loginModel = (account, result) => {
   sql.query(
@@ -123,8 +123,6 @@ Admin.updateAdmin = (id, data, result) => {
   );
 };
 
-
-
 Admin.updateuser = (id, data, result) => {
   sql.query(
     "UPDATE users SET name=?,username = ? ,password = ?, WHERE UserpasswordID=?",
@@ -189,7 +187,6 @@ Admin.updatesizeroom = (id, dataSizeRoom, result) => {
   );
 };
 
-
 Admin.removeAdmin = (id, result) => {
  
   sql.query("DELETE FROM admins WHERE  AdminID = ?", [id], (err, res) => {
@@ -241,7 +238,6 @@ Admin.removeRoom = (roomNumber, result) => {
   });
 };
 
-
 Admin.getAllRecordsroom = (result) => {
   console.log("you are in the adminmodel");
   sql.query("SELECT * FROM `room`", (err, res) => {
@@ -253,6 +249,7 @@ Admin.getAllRecordsroom = (result) => {
     result(null, res);
   });
 };
+
 Admin.getAllRecords = (result) => {
   sql.query("SELECT * FROM admins", (err, res) => {
     if (err) {
@@ -263,7 +260,6 @@ Admin.getAllRecords = (result) => {
     result(null, res);
   });
 };
-
 
 Admin.createRoom = (newRoom, result) => {
   sql.query("INSERT INTO room SET ?", newRoom, (err, res) => {
