@@ -85,6 +85,13 @@
       } else res.send(data);
     });
   };
+  const showAlluser = (req, res) => {
+    Admin.getAlluser((err, data) => {
+      if (err) {
+        res.status(500).send({ message: err.message || "Some error ocurred." });
+      } else res.send(data);
+    });
+  };
 
 const getallroom = (req, res) => {
   console.log("you are in the controller");
@@ -96,6 +103,14 @@ const getallroom = (req, res) => {
        } else res.send(data);
      });
    };
+const getroomdetail = (req, res) => {
+  console.log("you are in the controller");
+  Admin.getRoomdetail((err, data) => {
+    if (err) {
+      res.status(500).send({ message: err.message || "Some error ocurred." });
+    } else res.send(data);
+  });
+};
 
   const updateuserCtrl = (req, res) => {
     if (!req.body) {
@@ -182,19 +197,21 @@ const getallroom = (req, res) => {
       }
     });
   };
+ 
 
-  const AdminupdateSizeRoom = (req, res) => {
+  const   AdminupdateSizeRoom = (req, res) => {
     if (!req.body) {
       res.status(400).send({ message: "Content cannot be empty." });
       return;
     }
     const data = {
+      id: req.body.id,
       sizename: req.body.sizename,
       maxcapacity: req.body.maxcapacity,
       price: req.body.price,
     };
 
-    Admin.updatesizeroom(req.params.id, data, (err, result) => {
+    Admin.updatesizeroom( data, (err, result) => {
       if (err) {
         console.log(data);
         if (err.kind == "not_found") {
@@ -232,6 +249,35 @@ const getallroom = (req, res) => {
       }
     });
   };
+
+ const updateUserCtrl = (req, res) => {
+   if (!req.body) {
+     res.status(400).send({ message: "Content can not be empty." });
+   }
+   const salt = bcrypt.genSaltSync(10);
+   const data = {
+     id:req.body.id,
+     name: req.body.name,
+     username: req.body.username,
+     password: bcrypt.hashSync(req.body.password, salt),
+   };
+
+   Admin.updateUser(data, (err, result) => {
+     if (err) {
+       console.log(data);
+       if (err.kind == "not_found") {
+         res.status(401).send({ message: "not found user: " + req.params.id });
+       } else {
+         res.status(500).send({
+           message: "Error update user: " + req.params.id,
+           error: "error " + err,
+         });
+       }
+     } else {
+       res.send(result);
+     }
+   });
+ };
   
   module.exports = {
     validUsername,
@@ -245,4 +291,8 @@ const getallroom = (req, res) => {
     AdminupdateSizeRoom,
     addRoom,
     getallroom,
+    updateUserCtrl,
+    showAlluser,
+    getroomdetail,
+    
   };

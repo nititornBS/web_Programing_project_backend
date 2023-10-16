@@ -166,10 +166,10 @@ Admin.updateroom = (id,dataRoom, result) => {
   );
 };
 
-Admin.updatesizeroom = (id, dataSizeRoom, result) => {
+Admin.updatesizeroom = (dataSizeRoom, result) => {
   sql.query(
-    "UPDATE sizedetail SET SizeName=?,MaxCapacity = ? ,CurrentPricePerHour = ?, WHERE SizeID =?",
-    [dataSizeRoom.sizename, dataSizeRoom.maxcapacity, dataSizeRoom.price, id],
+    "UPDATE sizedetail SET SizeName=?,MaxCapacity = ? ,CurrentPricePerHour = ? WHERE SizeID =?",
+    [dataSizeRoom.sizename, dataSizeRoom.maxcapacity, dataSizeRoom.price, dataSizeRoom.id],
     (err, res) => {
       if (err) {
         console.log("Error: " + err);
@@ -180,8 +180,8 @@ Admin.updatesizeroom = (id, dataSizeRoom, result) => {
         result({ kind: "not_found" }, nall);
         return;
       }
-      console.log("Update user: " + { id: id, ...dataSizeRoom });
-      result(null, { id: id, ...dataSizeRoom });
+      console.log("Update size roomdetail: " + { ...dataSizeRoom });
+      result(null, { "update":"finished" });
       return;
     }
   );
@@ -260,6 +260,26 @@ Admin.getAllRecords = (result) => {
     result(null, res);
   });
 };
+Admin.getAlluser = (result) => {
+  sql.query("SELECT * FROM users", (err, res) => {
+    if (err) {
+      console.log("Query err: " + err);
+      result(err, null);
+      return;
+    }
+    result(null, res);
+  });
+};
+Admin.getRoomdetail = (result) => {
+  sql.query("SELECT * FROM sizedetail", (err, res) => {
+    if (err) {
+      console.log("Query err: " + err);
+      result(err, null);
+      return;
+    }
+    result(null, res);
+  });
+};
 
 Admin.createRoom = (newRoom, result) => {
   sql.query("INSERT INTO room SET ?", newRoom, (err, res) => {
@@ -273,4 +293,24 @@ Admin.createRoom = (newRoom, result) => {
   });
 };
 
+Admin.updateUser = ( data, result) => {
+  sql.query(
+    "UPDATE users SET Name = ?,Username = ? ,Password = ? WHERE UserID=?",
+    [data.name, data.username, data.password, data.id],
+    (err, res) => {
+      if (err) {
+        console.log("Error: " + err);
+        result(err, null);
+        return;
+      }
+      if (res.affectedRows == 0) {
+        result({ kind: "not_found" }, nall);
+        return;
+      }
+      console.log("Update user: " + { ...data });
+      result(null, { ...data });
+      return;
+    }
+  );
+};
 module.exports = Admin;
