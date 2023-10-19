@@ -58,6 +58,16 @@ const getIncome = (req, res) => {
     } else res.send(data);
   });
 };
+const overview = (req, res) => {
+  const data = {
+    BookingDate: req.body.BookingDate,
+  };
+  booking.getoverview(data, (err, data) => {
+    if (err) {
+      res.status(500).send({ message: err.message || "Some error ocurred." });
+    } else res.send(data);
+  });
+};
 const getuser = (req, res) => {
   const data = {
     BookingDate: req.body.BookingDate,
@@ -93,6 +103,18 @@ const getAllBooked = (req, res) => {
     } else res.send(data);
   });
 };
+const getABooked = (req, res) => {
+  const data = {
+    RoomID: req.body.RoomID,
+    UserID: req.body.UserID,
+    BookingDate: req.body.BookingDate,
+  };
+  booking.getAbooked(data,(err, data) => {
+    if (err) {
+      res.status(500).send({ message: err.message || "Some error ocurred." });
+    } else res.send(data);
+  });
+};
 module.exports = {
   showAllTime,
   showRoomDetail,
@@ -102,4 +124,6 @@ module.exports = {
   getIncome,
   getuser,
   gettotalhour,
+  overview,
+  getABooked,
 };

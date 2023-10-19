@@ -57,7 +57,23 @@ Booking.RoomTime = (room, result) => {
 
 Booking.getsumincome = (date, result) => {
   sql.query(
-    "SELECT SUM(TotalPrice) AS TotalIncome FROM `booking`WHERE BookingDate = ? GROUP BY BookingDate  ",
+    "SELECT SUM(TotalPrice) AS TotalIncome FROM `booking`WHERE BookingDate = ?  ",
+    [date.BookingDate],
+    (err, res) => {
+      if (err) {
+        console.log("Query err: " + err);
+        result(err, null);
+        return;
+      } else {
+        console.log("return the total price for date: " + date.BookingDate);
+        result(null, res);
+      }
+    }
+  );
+};
+Booking.getoverview = (date, result) => {
+  sql.query(
+    "SELECT COUNT(DISTINCT UserID)AS NumberOFuser_today, SUM(TotalPrice) AS TotalIncome, SUM(TotalHour) AS TotalHour FROM `booking`WHERE BookingDate = ? GROUP BY BookingDate  ",
     [date.BookingDate],
     (err, res) => {
       if (err) {
@@ -124,5 +140,19 @@ Booking.getAllbooked = (result) => {
     }
     result(null, res);
   });
+};
+Booking.getAbooked = (data,result) => {
+  sql.query(
+    "SELECT * FROM `booking` WHERE RoomID = ? AND UserID = ? AND BookingDate=?",
+    [data.RoomID, data.UserID, data.BookingDate],
+    (err, res) => {
+      if (err) {
+        console.log("Query err: " + err);
+        result(err, null);
+        return;
+      }
+      result(null, res);
+    }
+  );
 };
 module.exports = Booking;
