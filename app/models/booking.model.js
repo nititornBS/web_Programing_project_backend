@@ -22,7 +22,11 @@ Booking.newbooking = (newbooking, result) => {
       return;
     }
 
-    result(null, { message: "booking sucessfuly" });
+    result(null, {
+      message: "booking sucessfuly",
+      BookingID: res.insertId,
+      ...newbooking,
+    });
     console.log("add room: ", {
       ...newbooking,
     });
@@ -131,20 +135,24 @@ Booking.showroomdetail = (result) => {
     result(null, res);
   });
 };
-Booking.getAllbooked = (result) => {
-  sql.query("SELECT * FROM `booking`", (err, res) => {
-    if (err) {
-      console.log("Query err: " + err);
-      result(err, null);
-      return;
+Booking.getAllbooked = (data,result) => {
+  sql.query(
+    "SELECT * FROM `booking` WHERE UserID = ?",
+    [data.UserID],
+    (err, res) => {
+      if (err) {
+        console.log("Query err: " + err);
+        result(err, null);
+        return;
+      }
+      result(null, res);
     }
-    result(null, res);
-  });
+  );
 };
 Booking.getAbooked = (data,result) => {
   sql.query(
-    "SELECT * FROM `booking` WHERE RoomID = ? AND UserID = ? AND BookingDate=?",
-    [data.RoomID, data.UserID, data.BookingDate],
+    "SELECT * FROM `booking` WHERE BookingID =?",
+    [data.BookingID],
     (err, res) => {
       if (err) {
         console.log("Query err: " + err);

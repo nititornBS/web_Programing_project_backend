@@ -97,7 +97,10 @@ const showRoomDetail = (req, res) => {
    });
 }
 const getAllBooked = (req, res) => {
-  booking.getAllbooked((err, data) => {
+  const data = {
+    UserID: req.body.UserID,
+  };
+  booking.getAllbooked(data,(err, data) => {
     if (err) {
       res.status(500).send({ message: err.message || "Some error ocurred." });
     } else res.send(data);
@@ -105,9 +108,9 @@ const getAllBooked = (req, res) => {
 };
 const getABooked = (req, res) => {
   const data = {
-    RoomID: req.body.RoomID,
-    UserID: req.body.UserID,
-    BookingDate: req.body.BookingDate,
+    BookingID: req.body.BookingID,
+    // UserID: req.body.UserID,
+    // BookingDate: req.body.BookingDate,
   };
   booking.getAbooked(data,(err, data) => {
     if (err) {
