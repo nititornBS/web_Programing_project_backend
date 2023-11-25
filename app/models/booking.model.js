@@ -58,6 +58,20 @@ Booking.RoomTime = (room, result) => {
     }
   );
 };
+Booking.currentstetus = (room, result) => {
+  sql.query(
+    "SELECT RoomNumber,RoomID FROM room WHERE RoomID NOT IN (SELECT RoomID FROM booking WHERE StartTime < ? AND EndTime > ?  AND BookingDate = ?) ",
+    [room.CurrentTime, room.CurrentTime, room.CurrentDate],
+    (err, res) => {
+      if (err) {
+        console.log("Query err: " + err);
+        result(err, null);
+        return;
+      }
+      result(null, res);
+    }
+  );
+};
 
 Booking.getsumincome = (date, result) => {
   sql.query(

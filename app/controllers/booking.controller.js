@@ -48,6 +48,18 @@ const getRoomTime = (req, res) => {
   });
 };
 
+const getcurrentstetus = (req, res) => {
+  const data = {
+    CurrentTime: req.body.CurrentTime,
+    CurrentDate: req.body.CurrentDate,
+  };
+  booking.currentstetus(data, (err, data) => {
+    if (err) {
+      res.status(500).send({ message: err.message || "Some error ocurred." });
+    } else res.send(data);
+  });
+};
+
 const getIncome = (req, res) => {
   const data = {
     BookingDate: req.body.BookingDate,
@@ -109,8 +121,7 @@ const getAllBooked = (req, res) => {
 const getABooked = (req, res) => {
   const data = {
     BookingID: req.body.BookingID,
-    // UserID: req.body.UserID,
-    // BookingDate: req.body.BookingDate,
+
   };
   booking.getAbooked(data,(err, data) => {
     if (err) {
@@ -129,4 +140,5 @@ module.exports = {
   gettotalhour,
   overview,
   getABooked,
+  getcurrentstetus,
 };

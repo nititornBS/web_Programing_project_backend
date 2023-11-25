@@ -20,4 +20,5 @@ module.exports = (app) => {
   router.post("/newbooking", authJwt, booking_controller.addNewBook);
   router.get("/getroomtime", authJwt, booking_controller.getRoomTime);
   router.get("/gettime",authJwt, booking_controller.showAllTime);
+  router.get("/currentstetus",authJwt, booking_controller.getcurrentstetus);
 };
