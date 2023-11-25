@@ -146,8 +146,8 @@ Admin.updateuser = (id, data, result) => {
 
 Admin.updateroom = (id,dataRoom, result) => {
   sql.query(
-    "UPDATE room SET RoomNumber=?, SizeID=?, CurrentStatus=? WHERE RoomID=?",
-    [dataRoom.roomnumber, dataRoom.sizeid, dataRoom.CurrentStatus, id],
+    "UPDATE room SET RoomNumber=?, SizeID=? WHERE RoomID=?",
+    [dataRoom.roomnumber, dataRoom.sizeid, id],
     (err, res) => {
       if (err) {
         console.log("Error: " + err);
@@ -168,7 +168,7 @@ Admin.updateroom = (id,dataRoom, result) => {
 
 Admin.updatesizeroom = (dataSizeRoom, result) => {
   sql.query(
-    "UPDATE sizedetail SET SizeName=?,MaxCapacity = ? ,CurrentPricePerHour = ? WHERE SizeID =?",
+    "UPDATE sizedetail SET SizeName=?,MaxCapacity = ? WHERE SizeID =?",
     [dataSizeRoom.sizename, dataSizeRoom.maxcapacity, dataSizeRoom.price, dataSizeRoom.id],
     (err, res) => {
       if (err) {
@@ -188,7 +188,6 @@ Admin.updatesizeroom = (dataSizeRoom, result) => {
 };
 
 Admin.removeAdmin = (id, result) => {
- 
   sql.query("DELETE FROM admins WHERE  AdminID = ?", [id], (err, res) => {
     if (err) {
       console.log("Query : " + err);

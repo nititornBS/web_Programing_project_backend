@@ -49,6 +49,7 @@ const login = (req, res) => {
     username: req.body.username,
     password: req.body.password,
   });
+  console.log(req.body)
   User.loginModel(acc, (err, data) => {
     if (err) {
       if (err.kind == "not_found") {

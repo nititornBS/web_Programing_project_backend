@@ -56,8 +56,6 @@ User.loginModel = (account, result) => {
         return;
       }
       if (res.length) {
-        console.log("Input Password: " + account.password);
-        console.log("Stored Password: " + res[0].Password);
 
         const inputPassword = account.password;
         const storedPassword = res[0].Password;
