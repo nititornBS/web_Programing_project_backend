@@ -175,8 +175,8 @@ const getroomdetail = (req, res) => {
 
     const data = {
       roomnumber: req.body.roomnumber,
-      sizeid: req.body.sizeid
-    
+      sizeid: req.body.sizeid,
+      stetus: req.body.stetus,
     };
 
     Admin.updateroom(req.params.id,data, (err, result) => {
