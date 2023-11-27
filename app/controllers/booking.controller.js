@@ -47,6 +47,17 @@ const getRoomTime = (req, res) => {
     } else res.send(data);
   });
 };
+const gettimefull = (req, res) => {
+  const data = {
+    BookingDate: req.body.BookingDate,
+  };
+  booking.gettimefulls(data, (err, data) => {
+    if (err) {
+      res.status(500).send({ message: err.message || "Some error ocurred." });
+    } else res.send(data);
+  });
+};
+
 
 const getcurrentstetus = (req, res) => {
   const data = {
@@ -128,6 +139,43 @@ const getABooked = (req, res) => {
       res.status(500).send({ message: err.message || "Some error ocurred." });
     } else res.send(data);
   });
+  
+};
+const weeklyOverview = (req, res) => {
+  const data = {
+    BookingData: req.body.BookingData,
+    BookingDataEnd: req.body.BookingDataEnd,
+  };
+  booking.getWeeklyOverview(data, (err, data) => {
+    if (err) {
+      res.status(500).send({ message: err.message || "Some error ocurred." });
+    } else res.send(data);
+  });
+};
+
+const MostBookedRoom = (req, res) => {
+  const data = {
+    BookingDate: req.body.BookingDate,
+    RoomNumber: req.body.RoomNumber,
+    BookingCount: req.body.BookingCount,
+  };
+  booking.getMostBookedRoom(data, (err, data) => {
+    if (err) {
+      res.status(500).send({ message: err.message || "Some error ocurred." });
+    } else res.send(data);
+  });
+};
+
+const TopSpender = (req, res) => {
+  const data = {
+    Username: req.body.Username,
+    spend: req.body.spend,
+  };
+  booking.getTopSpender(data, (err, data) => {
+    if (err) {
+      res.status(500).send({ message: err.message || "Some error ocurred." });
+    } else res.send(data);
+  });
 };
 module.exports = {
   showAllTime,
@@ -139,6 +187,10 @@ module.exports = {
   getuser,
   gettotalhour,
   overview,
+  gettimefull,
   getABooked,
+  MostBookedRoom,
+  weeklyOverview,
+  TopSpender,
   getcurrentstetus,
 };

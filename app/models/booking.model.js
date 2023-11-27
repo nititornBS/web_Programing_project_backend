@@ -58,6 +58,20 @@ Booking.RoomTime = (room, result) => {
     }
   );
 };
+Booking.gettimefulls = (room, result) => {
+  sql.query(
+    "SELECT RoomID, SUM(TotalHour) AS SUM_TotalHour FROM booking WHERE BookingDate = ? GROUP BY RoomID HAVING SUM(TotalHour) = 8",
+    [room.BookingDate],
+    (err, res) => {
+      if (err) {
+        console.log("Query err: " + err);
+        result(err, null);
+        return;
+      }
+      result(null, res);
+    }
+  );
+};
 Booking.currentstetus = (room, result) => {
   sql.query(
     "SELECT RoomNumber,RoomID FROM room WHERE RoomID NOT IN (SELECT RoomID FROM booking WHERE StartTime < ? AND EndTime > ?  AND BookingDate = ?) ",
@@ -75,7 +89,7 @@ Booking.currentstetus = (room, result) => {
 
 Booking.getsumincome = (date, result) => {
   sql.query(
-    "SELECT SUM(TotalPrice) AS TotalIncome FROM `booking`WHERE BookingDate = ?  ",
+    "SELECT SUM(TotalPrice) AS TotalIncome FROM `booking` WHERE BookingDate = ?  ",
     [date.BookingDate],
     (err, res) => {
       if (err) {
@@ -83,8 +97,14 @@ Booking.getsumincome = (date, result) => {
         result(err, null);
         return;
       } else {
-        console.log("return the total price for date: " + date.BookingDate);
-        result(null, res);
+        console.log(
+          "return the total price for date: " +
+            date.BookingDate +
+            " " +
+            res[0].TotalIncome  
+        );
+        
+        result(null, res[0].TotalIncome);
       }
     }
   );
@@ -117,6 +137,74 @@ Booking.getUser = (date, result) => {
         return;
       } else {
         console.log("return the total income for date: " + date.BookingDate);
+        result(null, res);
+      }
+    }
+  );
+};
+Booking.getWeeklyOverview = (data, result) => {
+  sql.query(
+    "SELECT BookingDate, COUNT(DISTINCT UserID) AS NumberOfUsers,SUM(TotalPrice) AS TotalIncome,SUM(TotalHour) AS TotalHour FROM booking WHERE BookingDate BETWEEN ? AND ? GROUP BY BookingDate ",
+    [data.BookingData, data.BookingDataEnd],
+    (err, res) => {
+      if (err) {
+        console.log("Query err: " + err);
+        result(err, null);
+        return;
+      } else {
+        console.log(
+          "return the total price for data: " +
+            data.BookingData +
+            "till this data:" +
+            data.BookingDataEnd
+        );
+        result(null, res);
+      }
+    }
+  );
+};
+Booking.getMostBookedRoom = (data, result) => {
+  sql.query(
+    "SELECT r.RoomNumber, COUNT(*) AS BookingCount FROM booking b join room r ON b.RoomID = r.RoomID WHERE b.BookingDate = ? GROUP BY b.RoomID ORDER BY BookingCount DESC",
+    [data.BookingDate, data.RoomNumber, data.BookingCount],
+    (err, res) => {
+      if (err) {
+        console.log("Query err: " + err);
+        result(err, null);
+        return;
+      } else {
+        console.log(
+          "return the Most Booked Room From this date" +
+            data.BookingDate +
+            "Room Number:" +
+            data.RoomNumber +
+            "Booking Count:" +
+            data.BookingCount
+        );
+        result(null, res);
+      }
+    }
+  );
+};
+
+Booking.getTopSpender = (data, result) => {
+  sql.query(
+    "SELECT u.Username, SUM(TotalPrice) AS Spend FROM booking b join users u ON b.UserID = u.UserID GROUP BY b.UserID ORDER BY Spend DESC LIMIT 5",
+    [data.Username, data.spend],
+    (err, res) => {
+      if (err) {
+        console.log("Query err: " + err);
+        result(err, null);
+        return;
+      } else {
+        console.log(
+          "return the Most Booked Room From this date" +
+            data.BookingDate +
+            "Room Number:" +
+            data.RoomNumber +
+            "Booking Count:" +
+            data.BookingCount
+        );
         result(null, res);
       }
     }
@@ -165,7 +253,7 @@ Booking.getAllbooked = (data,result) => {
 };
 Booking.getAbooked = (data,result) => {
   sql.query(
-    "SELECT * FROM `booking` WHERE BookingID =?",
+    "SELECT * FROM `booking` WHERE BookingID = ?",
     [data.BookingID],
     (err, res) => {
       if (err) {
