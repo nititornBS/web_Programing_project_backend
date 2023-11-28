@@ -104,7 +104,7 @@ const deletedUser = (req, res) => {
       } else {
         res
           .status(500)
-          .send({ messsage: "Error delete user: " + reqparams.id });
+          .send({ messsage: "Error delete user: " + req.params.id });
       }
     } else {
       res.send(result);

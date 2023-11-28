@@ -146,8 +146,8 @@ Admin.updateuser = (id, data, result) => {
 
 Admin.updateroom = (id,dataRoom, result) => {
   sql.query(
-    "UPDATE room SET RoomNumber=?, SizeID=? ,Status = ?WHERE RoomID=?",
-    [dataRoom.roomnumber, , dataRoom.sizeid, dataRoom.stetus, id],
+    "UPDATE room SET RoomNumber=?, SizeID=?, status = ? WHERE RoomID=?",
+    [dataRoom.roomnumber, dataRoom.sizeid, dataRoom.status, id],
     (err, res) => {
       if (err) {
         console.log("Error: " + err);
